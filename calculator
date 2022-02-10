@@ -1,0 +1,224 @@
+  import React, {useState} from 'react';
+  import { StyleSheet, Text, View, Button, Pressable, TouchableOpacity, Alert,TouchableHighlight} from "react-native";
+
+
+
+var num = false;
+var operator = '';
+
+
+
+
+
+
+  const Calculator = () => {
+    var rsult
+    
+    const [numerator, setNumerator] = useState('');
+    const [denominator, setDenominator] = useState('');
+    const [operand, setOperand] = useState('');
+    const [result, setResult] = useState('');
+
+        const check =(props)=>{
+          if (num == false )
+      {
+        setNumerator(numerator + props)
+        
+      }
+      else
+      {
+        setDenominator(denominator + props)
+         
+      }
+
+        }
+      
+      const operator =(props)=>
+      {
+        if(numerator == " ")
+        {
+          Alert.alert('Please enter a value first')
+        }
+        else{
+          num = true;
+        setOperand(operand + props)
+
+        }
+        
+        
+
+      }
+  
+  const calculate=(props)=>
+  {
+    if(props == '-')
+    {
+      setResult (parseInt(numerator) - parseInt(denominator))
+       rsult = result
+       clear()
+       setNumerator(numerator + rsult)
+
+      
+      //check(result)
+    }
+
+  }
+  
+  const clear=()=>
+  {
+    setNumerator('');
+    setDenominator('');
+    setOperand('')
+    setResult('')
+    
+
+
+
+  }
+
+
+
+
+
+    
+    return (
+      
+      <View style={styles.container}>
+        <View style={styles.screenContainer}> 
+        <View style={styles.logBox}>
+         <Text>{numerator}{operand}{denominator}{result} </Text>
+        </View>
+
+        </View>
+        <View style={styles.buttonContainer}>
+
+          <View style={styles.row}>
+            <TouchableHighlight onPress={()=>check(1)}><Text style = {styles.buttontext}>1</Text></TouchableHighlight>
+            <TouchableHighlight onPress={()=>check(2)}><Text style = {styles.buttontext}>2</Text></TouchableHighlight>
+            <TouchableHighlight onPress={()=>Alert.alert("Was pressed")}><Text style = {styles.buttontext}>3</Text></TouchableHighlight>
+            <TouchableHighlight onPress={()=>Alert.alert("Was pressed")}><Text style = {styles.buttontext}>/</Text></TouchableHighlight>
+            
+          
+            </View>
+            <View style={styles.row}>
+            <TouchableHighlight onPress={()=>Alert.alert()}><Text style = {styles.buttontext}>4</Text></TouchableHighlight>
+            <TouchableHighlight onPress={()=>Alert.alert("Was pressed")}><Text style = {styles.buttontext}>5</Text></TouchableHighlight>
+            <TouchableHighlight onPress={()=>Alert.alert("Was pressed")}><Text style = {styles.buttontext}>6</Text></TouchableHighlight>
+            <TouchableHighlight onPress={()=>Alert.alert("Was pressed")}><Text style = {styles.buttontext}>*</Text></TouchableHighlight>
+            
+          
+            </View>
+            <View style={styles.row}>
+            <TouchableHighlight onPress={()=>Alert.alert("Was pressed")}><Text style = {styles.buttontext}>7</Text></TouchableHighlight>
+            <TouchableHighlight onPress={()=>Alert.alert("Was pressed")}><Text style = {styles.buttontext}>8</Text></TouchableHighlight>
+            <TouchableHighlight onPress={()=>Alert.alert("Was pressed")}><Text style = {styles.buttontext}>9</Text></TouchableHighlight>
+            <TouchableHighlight onPress={()=>operator('-')}><Text style = {styles.buttontext}>-</Text></TouchableHighlight>
+            
+          
+            </View>
+            <View style={styles.row}>
+            <TouchableHighlight onPress={()=>clear()}><Text style = {styles.buttontext2}>cl</Text></TouchableHighlight>
+            <TouchableHighlight onPress={()=>Alert.alert("Was pressed")}><Text style = {styles.buttontext2}>0</Text></TouchableHighlight>
+            <TouchableHighlight onPress={()=>Alert.alert("Was pressed")}><Text style = {styles.buttontext2}>.</Text></TouchableHighlight>
+            <TouchableHighlight onPress={()=>Alert.alert("Was pressed")}><Text style = {styles.buttontext2}>+</Text></TouchableHighlight>
+            <TouchableHighlight onPress={()=>Alert.alert("Was pressed")}><Text style = {styles.buttontext2}>del</Text></TouchableHighlight>
+            
+            
+          
+            </View>
+            
+
+        
+        </View>
+
+        <View style={styles.equalsContainer}>
+        
+              <TouchableHighlight onPress={()=>calculate(operand)}><Text style = {styles.buttontext1}>=</Text></TouchableHighlight>
+        </View>
+        
+      </View>
+    );
+    }
+    
+
+
+
+
+  export default Calculator;
+
+
+
+
+
+    const styles = StyleSheet.create({
+      container:{
+        flex: 1,
+        flexDirection: 'column',
+        
+      },
+      screenContainer:{
+        flex: 2, 
+        backgroundColor: 'green' 
+        
+      },
+      
+      buttonContainer:{
+        flex: 7, 
+        backgroundColor: 'black'
+      },
+
+      equalsContainer:{
+        flex: 1, 
+        backgroundColor: 'green' ,
+        
+        
+        
+
+      },
+
+      row:{
+        
+        flexDirection: 'row',
+        flex:1,
+        justifyContent: 'space-evenly',
+        
+        
+        
+        
+        
+      },
+    logBox: {
+        padding: 40,
+        marginTop: 50,
+        marginLeft:10,
+        marginRight:10,
+        flexDirection:'row',
+        //borderWidth: StyleSheet.hairlineWidth,
+        borderColor: '#f0f0f0',
+        backgroundColor: 'white'
+      },
+
+      buttontext:{
+        marginTop:5,
+        
+          alignItems: "center",
+        backgroundColor: "#DDDDDD",
+        padding: 35
+
+          },
+          buttontext1:{
+          alignItems: "center",
+        backgroundColor: "#DDDDDD",
+        textAlign: 'center',
+        padding: 35
+
+          },
+          buttontext2:{
+          alignItems: "center",
+        backgroundColor: "#DDDDDD",
+        textAlign: 'center',
+        padding: 25
+
+          }
+          
+        });

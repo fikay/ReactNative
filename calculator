@@ -1,127 +1,269 @@
-  import React, {useState} from 'react';
-  import { StyleSheet, Text, View, Button, Pressable, TouchableOpacity, Alert,TouchableHighlight} from "react-native";
+import React, {useState, useEffect} from 'react';
+import { StyleSheet, Text, View, Button, Pressable, TouchableOpacity, Alert,TouchableHighlight} from "react-native";
 
-
-
-var num = false;
-var operator = '';
-
-
-
-
-
-
-  const Calculator = () => {
-    var rsult
+const Calculator = () => {
     
-    const [numerator, setNumerator] = useState('');
-    const [denominator, setDenominator] = useState('');
-    const [operand, setOperand] = useState('');
-    const [result, setResult] = useState('');
+const [inputValue, setInputValue]= useState('')
+const [denominator, setDenominator]= useState('')
+const [numerator, setNumerator] = useState('')
+const [operand, setOperand] = useState('')
+const [result, setResult] = useState('')
+const [newVal, setNewval] = useState('')
 
-        const check =(props)=>{
-          if (num == false )
-      {
-        setNumerator(numerator + props)
+/*
+  * deleteKey
+  * Purpose: This function clears the last digit entered by the user but checks if the entered string is equals                to the result of the former calculated result
+  * Parameter(s):
+        *Empty.
+  * preconditions:
+        *inputValue is defined
+  * Side Effect:
+        *inputValue last digit is removed
+
+  */ 
+const deleteKey=()=>
+{
+  if(inputValue != result)
+  {
+    setInputValue(inputValue.slice(0,-1)) 
+  }
+ 
+}
+/*
+  * clear
+  * Purpose: This function changes all values to null.
+  * Parameter(s):
+        *s: a variable which helps identify the degree to which the states should be cleared.i.e if all the                   values should be cleared or just a few.
+  * preconditions:
+        *inputValue is defined
+        *Numerator is defined
+        *Denominator is defined
+        *Operand is defined
+  * Side Effect:
+      ***if c is passed:
+        *inputValue is cleared
+        *Denominator is cleared
+        *Operand is cleared
+      ***If c is not passed
+        *inputValue is cleared
+        *Denominator is cleared
+        *Operand is cleared
+        *Numerator is cleared
+        *Result is cleared
+*/ 
+  const clear=(prop)=>
+  {
+    if(prop == 'c')
+    {
+      setInputValue('')
+      setDenominator('')
+      setResult('')
+
+    }
+    else
+    {
+      setOperand('')
+      setInputValue('')
+      setNumerator('')
+      setDenominator('')
+      setResult('')
+    }
+    
+
+  }
+  
+  /*
+  * handleSetInputValue
+  * Purpose: This function takes input from the user based on what button they press, converts it into a float                 then checks if the float is an integer. If it is an integer, check that the result variable is empty              set the variable str to inputValue or else clear the screen.If str is equal to an operand, set the                operand to str and if the numerator is empty set it to the inputValue.If both the operand and                     numerator have being set, set the new str to the denominator 
+  * Parameter(s):
+        *str: a string that is gotten from the buttons pressed.
+  * preconditions:
+            *Variable str is defined
         
+
+  * Side Effect:
+        *inputValue is defined
+        *Numerator is defined
+        *Denominator is defined
+        *Operand is defined
+        *inputValue is changed on the screen
+
+  */ 
+
+const handleSetInputValue=(str)=>
+{
+
+  const  stringTonumber = parseFloat(str)
+  
+  if(!isNaN(stringTonumber) || str == '.')
+  {
+    //console.log({result})
+    if(result == '')
+    {
+      setInputValue(inputValue + str)
+    }
+    else
+    {
+      clear('c')
+    }
+    setInputValue(inputValue + str)
+    
+    if(numerator != '' && operand !='')
+      {
+        setDenominator(inputValue + str)
+      }
+  }
+  else 
+  {
+    const supportedOperand = ['+','-','*','/']
+    if(supportedOperand.indexOf(str) != -1)
+    {
+      setOperand(str)
+      
+      if(numerator == '')
+      {
+
+        setNumerator(inputValue)
+        setInputValue('')
       }
       else
       {
-        setDenominator(denominator + props)
-         
-      }
-
-        }
-      
-      const operator =(props)=>
-      {
-        if(numerator == " ")
-        {
-          Alert.alert('Please enter a value first')
-        }
-        else{
-          num = true;
-        setOperand(operand + props)
-
-        }
+        setInputValue('')
         
-        
-
       }
-  
-  const calculate=(props)=>
-  {
-    if(props == '-')
-    {
-      setResult (parseInt(numerator) - parseInt(denominator))
-       rsult = result
-       clear()
-       setNumerator(numerator + rsult)
+     
 
-      
-      //check(result)
     }
 
-  }
-  
-  const clear=()=>
-  {
-    setNumerator('');
-    setDenominator('');
-    setOperand('')
-    setResult('')
     
+  }
 
+}
+/*
+  * calculateResult
+  * Purpose: This function checks what is stored in the operand and decides what operation to carry out based on  `            the operand.It converts the numerator and denominator to floats and then performs the mathematical                operation.It then sets the inputValue,Numerator and result to a string of the calculated result.
+  * Parameter(s):
+        *Empty.
+  * preconditions:
+        *inputValue is defined
+        *Numerator is defined
+        *Denominator is defined
+        *Operand is defined
 
+  * Side Effect:
+        
+        *Addition,subtraction, multiplication or division is carried out on the numerator and denominator.
+        *inputValue is defined
+        *Numerator is defined
+        *Denominator is defined
+        *Operand is defined
+        *inputValue is changed on the screen
+
+  */ 
+
+const calculateResult=()=>
+{
+  if(operand == '+')
+  {
+    const numeratorToInteger = parseFloat(numerator)
+    const denominatorToInteger = parseFloat(denominator)
+    const calculatedResult = numeratorToInteger + denominatorToInteger
+    setInputValue(`${calculatedResult}`)
+    setNumerator(`${calculatedResult}`)
+    setOperand('')
+    setDenominator('')
+    setResult(`${calculatedResult}`)
+    console.log(calculatedResult)
+  }
+  else if(operand == '-')
+  {
+     const numeratorToInteger = parseFloat(numerator)
+    const denominatorToInteger = parseFloat(denominator)
+    const calculatedResult = numeratorToInteger - denominatorToInteger
+    setInputValue(`${calculatedResult}`)
+    setNumerator(`${calculatedResult}`)
+    setOperand('')
+    setDenominator('')
+    setResult(`${calculatedResult}`)
+    console.log(calculatedResult)
+
+  }
+  else if(operand == '*')
+  {
+     const numeratorToInteger = parseFloat(numerator)
+    const denominatorToInteger = parseFloat(denominator)
+    const calculatedResult = numeratorToInteger * denominatorToInteger
+    setInputValue(`${calculatedResult}`)
+    setNumerator(`${calculatedResult}`)
+    setOperand('')
+    setDenominator('')
+    setResult(`${calculatedResult}`)
+    console.log(calculatedResult)
+
+  }
+  else if (operand == '/')
+  {
+    const numeratorToInteger = parseFloat(numerator)
+    const denominatorToInteger = parseFloat(denominator)
+    const calculatedResult = numeratorToInteger / denominatorToInteger
+    setInputValue(`${calculatedResult}`)
+    setNumerator(`${calculatedResult}`)
+    setOperand('')
+    setDenominator('')
+   setResult(`${calculatedResult}`)
+   
 
   }
 
 
+}
 
 
+useEffect(()=>{console.log({numerator, denominator,operand,result, inputValue})},[numerator,denominator,operand,result, inputValue])
 
     
     return (
       
       <View style={styles.container}>
         <View style={styles.screenContainer}> 
-        <View style={styles.logBox}>
-         <Text>{numerator}{operand}{denominator}{result} </Text>
-        </View>
+          <View style={styles.logBox}>
+            <Text style = {styles.titleText}>{inputValue} </Text>
+          </View>
 
         </View>
+        
         <View style={styles.buttonContainer}>
 
           <View style={styles.row}>
-            <TouchableHighlight onPress={()=>check(1)}><Text style = {styles.buttontext}>1</Text></TouchableHighlight>
-            <TouchableHighlight onPress={()=>check(2)}><Text style = {styles.buttontext}>2</Text></TouchableHighlight>
-            <TouchableHighlight onPress={()=>Alert.alert("Was pressed")}><Text style = {styles.buttontext}>3</Text></TouchableHighlight>
-            <TouchableHighlight onPress={()=>Alert.alert("Was pressed")}><Text style = {styles.buttontext}>/</Text></TouchableHighlight>
+            <TouchableHighlight onPress={()=> handleSetInputValue('1')}><Text style = {styles.buttontext}>1</Text></TouchableHighlight>
+            <TouchableHighlight onPress={()=>handleSetInputValue('2')}><Text style = {styles.buttontext}>2</Text></TouchableHighlight>
+            <TouchableHighlight onPress={()=>handleSetInputValue('3')}><Text style = {styles.buttontext}>3</Text></TouchableHighlight>
+            <TouchableHighlight onPress={()=>handleSetInputValue('/')}><Text style = {styles.buttontext}>/</Text></TouchableHighlight>
             
           
             </View>
             <View style={styles.row}>
-            <TouchableHighlight onPress={()=>Alert.alert()}><Text style = {styles.buttontext}>4</Text></TouchableHighlight>
-            <TouchableHighlight onPress={()=>Alert.alert("Was pressed")}><Text style = {styles.buttontext}>5</Text></TouchableHighlight>
-            <TouchableHighlight onPress={()=>Alert.alert("Was pressed")}><Text style = {styles.buttontext}>6</Text></TouchableHighlight>
-            <TouchableHighlight onPress={()=>Alert.alert("Was pressed")}><Text style = {styles.buttontext}>*</Text></TouchableHighlight>
+            <TouchableHighlight onPress={()=>handleSetInputValue('4')}><Text style = {styles.buttontext}>4</Text></TouchableHighlight>
+            <TouchableHighlight onPress={()=>handleSetInputValue('5')}><Text style = {styles.buttontext}>5</Text></TouchableHighlight>
+            <TouchableHighlight onPress={()=>handleSetInputValue('6')}><Text style = {styles.buttontext}>6</Text></TouchableHighlight>
+            <TouchableHighlight onPress={()=>handleSetInputValue('*')}><Text style = {styles.buttontext}>*</Text></TouchableHighlight>
             
           
             </View>
             <View style={styles.row}>
-            <TouchableHighlight onPress={()=>Alert.alert("Was pressed")}><Text style = {styles.buttontext}>7</Text></TouchableHighlight>
-            <TouchableHighlight onPress={()=>Alert.alert("Was pressed")}><Text style = {styles.buttontext}>8</Text></TouchableHighlight>
-            <TouchableHighlight onPress={()=>Alert.alert("Was pressed")}><Text style = {styles.buttontext}>9</Text></TouchableHighlight>
-            <TouchableHighlight onPress={()=>operator('-')}><Text style = {styles.buttontext}>-</Text></TouchableHighlight>
+            <TouchableHighlight onPress={()=>handleSetInputValue('7')}><Text style = {styles.buttontext}>7</Text></TouchableHighlight>
+            <TouchableHighlight onPress={()=>handleSetInputValue('8')}><Text style = {styles.buttontext}>8</Text></TouchableHighlight>
+            <TouchableHighlight onPress={()=>handleSetInputValue('9')}><Text style = {styles.buttontext}>9</Text></TouchableHighlight>
+            <TouchableHighlight onPress={()=>handleSetInputValue('-')}><Text style = {styles.buttontext}>-</Text></TouchableHighlight>
             
           
             </View>
             <View style={styles.row}>
             <TouchableHighlight onPress={()=>clear()}><Text style = {styles.buttontext2}>cl</Text></TouchableHighlight>
-            <TouchableHighlight onPress={()=>Alert.alert("Was pressed")}><Text style = {styles.buttontext2}>0</Text></TouchableHighlight>
-            <TouchableHighlight onPress={()=>Alert.alert("Was pressed")}><Text style = {styles.buttontext2}>.</Text></TouchableHighlight>
-            <TouchableHighlight onPress={()=>Alert.alert("Was pressed")}><Text style = {styles.buttontext2}>+</Text></TouchableHighlight>
-            <TouchableHighlight onPress={()=>Alert.alert("Was pressed")}><Text style = {styles.buttontext2}>del</Text></TouchableHighlight>
+            <TouchableHighlight onPress={()=>handleSetInputValue('0')}><Text style = {styles.buttontext2}>0</Text></TouchableHighlight>
+            <TouchableHighlight onPress={()=>handleSetInputValue('.')}><Text style = {styles.buttontext2}>.</Text></TouchableHighlight>
+            <TouchableHighlight onPress={()=> handleSetInputValue('+')}><Text style = {styles.buttontext2}>+</Text></TouchableHighlight>
+            <TouchableHighlight onPress={()=>deleteKey()}><Text style = {styles.buttontext2}>del</Text></TouchableHighlight>
             
             
           
@@ -133,7 +275,7 @@ var operator = '';
 
         <View style={styles.equalsContainer}>
         
-              <TouchableHighlight onPress={()=>calculate(operand)}><Text style = {styles.buttontext1}>=</Text></TouchableHighlight>
+              <TouchableHighlight onPress={()=>calculateResult()}><Text style = {styles.buttontext1}>=</Text></TouchableHighlight>
         </View>
         
       </View>
@@ -151,74 +293,76 @@ var operator = '';
 
 
     const styles = StyleSheet.create({
-      container:{
+      container:
+      {
         flex: 1,
-        flexDirection: 'column',
-        
+        flexDirection: 'column',  
       },
-      screenContainer:{
+      screenContainer:
+      {
         flex: 2, 
         backgroundColor: 'green' 
-        
       },
       
-      buttonContainer:{
+      buttonContainer:
+      {
         flex: 7, 
         backgroundColor: 'black'
       },
 
-      equalsContainer:{
+      equalsContainer:
+      {
         flex: 1, 
         backgroundColor: 'green' ,
-        
-        
-        
-
       },
 
-      row:{
-        
+      row:
+      {
         flexDirection: 'row',
         flex:1,
-        justifyContent: 'space-evenly',
-        
-        
-        
-        
-        
+        justifyContent: 'space-evenly',  
       },
-    logBox: {
+      logBox: 
+      {
         padding: 40,
-        marginTop: 50,
+        marginTop: 40,
         marginLeft:10,
-        marginRight:10,
+        marginRight:5,
         flexDirection:'row',
-        //borderWidth: StyleSheet.hairlineWidth,
         borderColor: '#f0f0f0',
-        backgroundColor: 'white'
+        backgroundColor: 'white'  
       },
 
-      buttontext:{
+      buttontext:
+      {
         marginTop:5,
-        
-          alignItems: "center",
+        alignItems: "center",
         backgroundColor: "#DDDDDD",
         padding: 35
+       },
 
-          },
-          buttontext1:{
-          alignItems: "center",
+      buttontext1:
+      {
+        alignItems: "center",
         backgroundColor: "#DDDDDD",
         textAlign: 'center',
         padding: 35
 
-          },
-          buttontext2:{
-          alignItems: "center",
+      },
+      buttontext2:
+      {
+        alignItems: "center",
         backgroundColor: "#DDDDDD",
         textAlign: 'center',
         padding: 25
 
-          }
+      },
+
+      titleText: 
+      {
+        fontSize: 20,
+        fontWeight: "bold",
+        
+      }
           
         });
